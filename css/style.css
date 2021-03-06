@@ -13,8 +13,8 @@
 
 :root{
 
-    --board-height: 100vmax;
-    --board-width: 96vmin;
+    --board-height: 80vmax;
+    --board-width: 80vmin;
 
 
     --notch-size-outer: 10px;
@@ -29,7 +29,7 @@
     --hole-size-bc: 3.9;
 
     --background-color: white;
-    --hole-color: gainsboro;
+    --hole-color: #dcdcdc;
 
 }
 
@@ -43,9 +43,12 @@ body{
     display: flex;
     flex-direction: column;
     width: var( --board-width);
+
     /* height: calc(var(--board-height) - 24px); */
 
     height: calc(var(--board-height) - (var(--board-size) - 2) * var(--offset));
+
+    /* border: 1px solid black; */
 
     position: absolute;
     top: 50%;
@@ -53,7 +56,6 @@ body{
     margin-right: -50%;
     transform: translate(-50%, -50%);
 }
-
 
 .turn{
     display: flex;
@@ -65,9 +67,6 @@ body{
     margin-left: 1px;
 
     opacity: 0;
-
-
-
 }
 
 .code-outer{
@@ -78,16 +77,28 @@ body{
     height: calc(var(--board-height) / var(--board-size) + var(--offset));
 
     clip-path: 
-    polygon(
-    0% var(--notch-size-outer), 
-    var(--notch-size-outer) 0%, 
-    calc(100% - var(--notch-size-outer)) 0%, 
-    100% var(--notch-size-outer), 
-    100% calc(100% - var(--notch-size-outer)), 
-    calc(100% - var(--notch-size-outer)) 100%, 
-    var(--notch-size-outer) 100%, 
-    0% calc(100% - var(--notch-size-outer))
-    );
+        polygon(
+            0% var(--notch-size-outer), 
+            var(--notch-size-outer) 0%, 
+            calc(100% - var(--notch-size-outer)) 0%, 
+            100% var(--notch-size-outer), 
+            100% calc(100% - var(--notch-size-outer)), 
+            calc(100% - var(--notch-size-outer)) 100%, 
+            var(--notch-size-outer) 100%, 
+            0% calc(100% - var(--notch-size-outer))
+        );
+
+    -webkit-clip-path: 
+        polygon(
+            0% var(--notch-size-outer), 
+            var(--notch-size-outer) 0%, 
+            calc(100% - var(--notch-size-outer)) 0%, 
+            100% var(--notch-size-outer), 
+            100% calc(100% - var(--notch-size-outer)), 
+            calc(100% - var(--notch-size-outer)) 100%, 
+            var(--notch-size-outer) 100%, 
+            0% calc(100% - var(--notch-size-outer))
+        );
 
 }
 
@@ -105,15 +116,28 @@ body{
 
     clip-path: 
         polygon(
-        0% var(--notch-size-inner), 
-        var(--notch-size-inner) 0%, 
-        calc(100% - var(--notch-size-inner)) 0%, 
-        100% var(--notch-size-inner), 
-        100% calc(100% - var(--notch-size-inner)), 
-        calc(100% - var(--notch-size-inner)) 100%, 
-        var(--notch-size-inner) 100%, 
-        0% calc(100% - var(--notch-size-inner))
+            0% var(--notch-size-inner), 
+            var(--notch-size-inner) 0%, 
+            calc(100% - var(--notch-size-inner)) 0%, 
+            100% var(--notch-size-inner), 
+            100% calc(100% - var(--notch-size-inner)), 
+            calc(100% - var(--notch-size-inner)) 100%, 
+            var(--notch-size-inner) 100%, 
+            0% calc(100% - var(--notch-size-inner))
         );
+
+    -webkit-clip-path: 
+        polygon(
+            0% var(--notch-size-inner), 
+            var(--notch-size-inner) 0%, 
+            calc(100% - var(--notch-size-inner)) 0%, 
+            100% var(--notch-size-inner), 
+            100% calc(100% - var(--notch-size-inner)), 
+            calc(100% - var(--notch-size-inner)) 100%, 
+            var(--notch-size-inner) 100%, 
+            0% calc(100% - var(--notch-size-inner))
+        );
+
 }
 
 .hole-code{
@@ -140,23 +164,32 @@ body{
 
     height: calc(var(--board-height) / var(--board-size) + var(--offset));
 
-    /* margin-left: -2px; */
-
-    margin-left: -3px;
+    margin-left: calc(-1 * var(--offset));
 
 
     clip-path: 
-    polygon(
-    0% var(--notch-size-outer), 
-    var(--notch-size-outer) 0%, 
-    calc(100% - var(--notch-size-outer)) 0%, 
-    100% var(--notch-size-outer), 
-    100% calc(100% - var(--notch-size-outer)), 
-    calc(100% - var(--notch-size-outer)) 100%, 
-    var(--notch-size-outer) 100%, 
-    0% calc(100% - var(--notch-size-outer))
-    );
+        polygon(
+            0% var(--notch-size-outer), 
+            var(--notch-size-outer) 0%, 
+            calc(100% - var(--notch-size-outer)) 0%, 
+            100% var(--notch-size-outer), 
+            100% calc(100% - var(--notch-size-outer)), 
+            calc(100% - var(--notch-size-outer)) 100%, 
+            var(--notch-size-outer) 100%, 
+            0% calc(100% - var(--notch-size-outer))
+        );
 
+    -webkit-clip-path: 
+        polygon(
+            0% var(--notch-size-outer), 
+            var(--notch-size-outer) 0%, 
+            calc(100% - var(--notch-size-outer)) 0%, 
+            100% var(--notch-size-outer), 
+            100% calc(100% - var(--notch-size-outer)), 
+            calc(100% - var(--notch-size-outer)) 100%, 
+            var(--notch-size-outer) 100%, 
+            0% calc(100% - var(--notch-size-outer))
+        );
 }
 
 .bc-inner{
@@ -175,14 +208,26 @@ body{
 
     clip-path: 
         polygon(
-        0% var(--notch-size-inner), 
-        var(--notch-size-inner) 0%, 
-        calc(100% - var(--notch-size-inner)) 0%, 
-        100% var(--notch-size-inner), 
-        100% calc(100% - var(--notch-size-inner)), 
-        calc(100% - var(--notch-size-inner)) 100%, 
-        var(--notch-size-inner) 100%, 
-        0% calc(100% - var(--notch-size-inner))
+            0% var(--notch-size-inner), 
+            var(--notch-size-inner) 0%, 
+            calc(100% - var(--notch-size-inner)) 0%, 
+            100% var(--notch-size-inner), 
+            100% calc(100% - var(--notch-size-inner)), 
+            calc(100% - var(--notch-size-inner)) 100%, 
+            var(--notch-size-inner) 100%, 
+            0% calc(100% - var(--notch-size-inner))
+        );
+
+    -webkit-clip-path: 
+        polygon(
+            0% var(--notch-size-inner), 
+            var(--notch-size-inner) 0%, 
+            calc(100% - var(--notch-size-inner)) 0%, 
+            100% var(--notch-size-inner), 
+            100% calc(100% - var(--notch-size-inner)), 
+            calc(100% - var(--notch-size-inner)) 100%, 
+            var(--notch-size-inner) 100%, 
+            0% calc(100% - var(--notch-size-inner))
         );
 }
 
@@ -239,28 +284,35 @@ body{
     opacity: 0;
 }
 
+.peg:hover{
+    cursor: pointer;
+}
+
+.moving{
+    z-index: 100;
+}
+
 .color-a{
     background: #e23838;
 }
 .color-b{
     background: #5ebd3e;
-
 }
 .color-c{
     background: #f78200;
-
 }
 .color-d{
     background: #009cdf;
-
 }
 .color-e{
     background: #ffb900;
-
 }
 .color-f{
     background: #973999;
+}
 
+.hidden {
+    display: none;
 }
 
 #label{
@@ -274,7 +326,7 @@ body{
 }
 
 #title{
-    font-size: 11.7vmin;
+    font-size: 12vmin;
     font-weight: bold;
     margin: 0;
     text-align: center;
@@ -319,8 +371,12 @@ img{
 
     :root{
 
-        --notch-size-outer: 20px;
-        --notch-size-inner: 18px;
+        /* --notch-size-outer: 20px;
+        --notch-size-inner: 18px; */
+
+        --notch-size-outer: 15px;
+        --notch-size-inner: 13px;
+
 
         --offset: 3px;
 
@@ -329,7 +385,7 @@ img{
     }
 
     #title{
-        font-size: 9.2vmin;
+        font-size: 9.6vmin;
         font-weight: bold;
         margin: 0;
         text-align: center;
@@ -348,19 +404,45 @@ img{
     
 }
 
+@media (min-width: 1150px), (min-height: 1150px){
+
+    :root{
+        --notch-size-outer: 20px;
+        --notch-size-inner: 18px;
+    }
+}
+
 @media (hover: hover){
+
+    :root{
+
+        --notch-size-outer: 10px;
+        --notch-size-inner: 8px;
+    }
+
+    /* @media (min-width: 800), (min-height: 800){
+        :root{
+
+            --notch-size-outer: 40px;
+            --notch-size-inner: 18px;
+        }
+
+    } */
+
     #title{
-        font-size: 4vmax;
+        font-size: 4.1vmax;
 
     }
     
     #subtitle{
-        font-size: 0.2max;
+        font-size: 0.8vmax;
  
     }
 }
 
+
 @media (orientation: landscape) and (hover: none){
+
     body {
 
       position: absolute;

@@ -1,0 +1,235 @@
+/* html{
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+} */
+@font-face {
+    font-family: 'Liberation';
+    src: url(../fonts/LiberationSerif-Bold.ttf);
+}
+
+@font-face {
+    font-family: 'Roboto Slab';
+    src: url(../fonts/RobotoSlab-Bold-webfont.woff);
+    font-weight: bold;
+}
+
+:root{
+
+    --board-height: 520px;
+    --board-width: 360px;
+
+    --notchSize: 10px;
+    --notchSize2: 9px;
+
+    --board-size: 10;
+
+}
+
+body{
+    font-family: 'Liberation', 'Times New Roman', Times, serif;
+    /* font-family: 'Times New Roman', Times, serif; */
+
+}
+
+.board{
+    display: flex;
+    flex-direction: column;
+    width: var( --board-width);
+    height: calc(var(--board-height) - 14px);
+    /* border: 1px solid black; */
+    /* margin: 0; */
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    /* margin-bottom: -20px; */
+}
+
+
+.turn{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background: white;
+    width: calc(var(--board-width));
+    height: calc(var(--board-height) / var(--board-size));
+    position: relative;
+ 
+}
+
+.hole-code{
+    position: relative;
+
+    height: calc(var(--board-height) / 16);
+    width: calc(var(--board-height) / 16);
+    border-radius: 50%;
+    background: gainsboro;
+    /* border: 1px solid black; */
+    text-align: center;
+    /* line-height: calc(var(--board-height) / 16); */
+    font-weight: bold;
+    font-size: 1.5em;
+    color: darkgray;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+
+}
+
+
+.bc-block{
+    display: grid;
+    gap: 5px;
+    grid-template-columns: auto auto;
+    justify-items: center;
+    align-items: center;
+
+    background: white;
+
+    width: calc(var(--board-height) / 16);
+
+    height: calc(var(--board-height) / var(--board-size));
+    position: relative;
+  
+
+   
+}
+
+.hole-bc{
+
+
+    height: calc(var(--board-height) / 64);
+    width: calc(var(--board-height) / 64);
+
+    border-radius: 50%;
+    background: gainsboro;
+    box-sizing: border-box;
+
+}
+
+
+.hole-bc:nth-child(1){
+
+    align-self: end;
+    justify-self: end;
+}
+.hole-bc:nth-child(2){
+
+    align-self: end;
+    justify-self: start;
+}
+.hole-bc:nth-child(3){
+
+    align-self: start;
+    justify-self: end;
+}
+.hole-bc:nth-child(4){
+
+    align-self: start;
+    justify-self: start;
+}
+
+.chip{
+    height: calc(var(--board-height) / 16);
+    width: calc(var(--board-height) / 16);
+    border-radius: 50%;
+    /* border: 1px solid black; */
+    text-align: center;
+    /* line-height: calc(var(--board-height) / 16); */
+    font-weight: bold;
+    font-size: 1.5em;
+
+    transition: all 0.3s ease-in-out;
+    color: dimgray;
+    z-index: 100;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+
+
+}
+
+.solution{
+    align-self: start;
+}
+
+.reload{
+    color: black;
+}
+
+
+img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+
+    width: calc(var(--board-height) / 30);
+    height: calc(var(--board-height) / 30);
+    justify-self: end;
+    filter: invert(73%) sepia(5%) saturate(12%) hue-rotate(354deg) brightness(95%) contrast(82%);
+    /* opacity: 0; */
+}
+
+.white{
+    background: white;
+    border: 1px solid black;
+
+}
+
+.black{
+    background: black;
+}
+
+
+.color1{
+    background: #e23838;
+}
+.color2{
+    background: #5ebd3e;
+
+}
+.color3{
+    background: #f78200;
+
+}
+.color4{
+    background: #009cdf;
+
+}
+.color5{
+    background: #ffb900;
+
+}
+.color6{
+    background: #973999;
+}
+.color0{
+    background: #ffffff;
+}
+.color7{
+    background: gainsboro;
+}
+
+@media (min-width: 460px) and (min-height: 460px){
+    
+}
+
+.noselect {
+    -webcit-tap-highlight-color: transparent;
+        -webcit-touch-callout: none;
+            -webcit-user-select: none; 
+            -moz-user-select: none; 
+                -ms-user-select: none; 
+                    user-select: none; 
+}
+ 
