@@ -26,8 +26,8 @@
 } 
 
 .flip-container, .front, .back {
-    width: calc(var(--board-width) / 4 * 3 - 4px);
-    height: calc(var(--board-height) / var(--board-size) - 4px + 2px);   
+    width: calc(var(--board-width) / 4 * 3 - var(--offset) * 2);
+    height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));
 }
 
 .flipper {

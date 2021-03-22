@@ -1,6 +1,6 @@
 {
-   "name": "Matermind",
-   "short_name": "Matermind",
+   "name": "Mastermind",
+   "short_name": "Mastermind",
    "start_url": "index.html",
    "display": "standalone",
    "orientation": "portrait",

@@ -1,6 +1,6 @@
 const cacheName = 'cache-v1';
 const files = [
-  'https://alex-berson.github.io/15-puzzle/',
+  'https://alex-berson.github.io/mastermind/',
   'index.html',
   'css/style.css',
   'css/flip.css',
@@ -11,7 +11,6 @@ const files = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('Service worker install event!');
   event.waitUntil(
     caches.open(cacheName)
       .then(cache => {
@@ -38,11 +37,3 @@ self.addEventListener('fetch', event => {
     })
   );
 });
-
-//self.addEventListener('fetch', event => {
-//  event.respondWith(caches.match(event.request)
-//    .then(response => {
-//      return response || fetch(event.request);
-//    })
-//  );
-//});

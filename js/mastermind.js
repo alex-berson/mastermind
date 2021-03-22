@@ -1,24 +1,23 @@
 let code = [];
 let guess = [];
 
-// if ('serviceWorker' in navigator) {
-//     window.addEventListener('load', () => {
-//       navigator.serviceWorker.register('service-worker.js')
-//         .then(reg => {
-//           console.log('Service worker registered!', reg);
-//         })
-//         .catch(err => {
-//           console.log('Service worker registration failed: ', err);
-//         });
-//     });
-// }  
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => {
+          console.log('Service worker registered!', reg);
+        })
+        .catch(err => {
+          console.log('Service worker registration failed: ', err);
+        });
+    });
+}  
 
 const generateCode = () => {
 
     const abc = "abcdef";
 
     code = abc.split("").map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]).splice(0, 4);
-    // code = ['e','c','a','f'];
 
     return;
 }
@@ -48,7 +47,6 @@ const totalGuessed = () => {
 
     let [bulls, cows] = bullsAndCows();
     return bulls + cows;
-
 }
 
 const turn = () => {
@@ -82,6 +80,7 @@ const disablePegs = () => {
             peg.removeEventListener("touchstart", pegTouched);
         } else {
             peg.removeEventListener("mousedown", pegTouched);
+            peg.style.cursor = "";
         }
     }
 }
@@ -92,6 +91,7 @@ const enablePegs = () => {
             peg.addEventListener("touchstart", pegTouched);
         } else {
             peg.addEventListener("mousedown", pegTouched);
+            peg.style.cursor = "pointer";
         }
 
         peg.addEventListener('transitionend', stopMoving);
@@ -108,6 +108,7 @@ const disableReload = () => {
         reloadBtn.parentElement.removeEventListener("touchstart", reload);
     } else {
         reloadBtn.parentElement.removeEventListener("mousedown", reload);
+        reloadBtn.parentElement.style.cursor = "";
     }
 }
 
@@ -121,6 +122,7 @@ const enableReload = () => {
         reloadBtn.parentElement.addEventListener("touchstart", reload);
     } else {
         reloadBtn.parentElement.addEventListener("mousedown", reload);
+        reloadBtn.parentElement.style.cursor = "pointer";
     }
 }
 
@@ -138,7 +140,6 @@ const clearRow = () => {
     document.querySelector(`.turn:nth-last-of-type(${turn()})`).querySelectorAll('.hole-code').forEach(hole => {
         hole.className = 'hole-code';
     });
-
 }
 
 const clearBoard = () => {
@@ -150,8 +151,6 @@ const clearBoard = () => {
         enablePegs();
 
         clearInterval(cleanInterval);
-
-        // showGame(); //
 
     } else {
 
@@ -168,12 +167,9 @@ const reload = () => {
     flipTitle();
     
     cleanInterval = setInterval(clearBoard, 150);
-
-    // cleanInterval = setInterval(clearBoard, 10);
-
 }
 
-const solutionSchown = () => {
+const solutionDispayed = () => {
     return document.querySelector(".flip-container").classList.contains('flip');
 }
 
@@ -269,7 +265,6 @@ const returnPeg = (e) => {
             e.currentTarget.style.transform = `translate(0px, 0px)`;
 
             e.currentTarget.classList.toggle("placed");
-
         }
     }
 }
@@ -281,7 +276,6 @@ const displayPegs = () => {
         peg.style.transition = `opacity 0s ${i/6}s ease-in-out, transform 0.3s ease-in-out`;
         peg.style.opacity = 1;
         peg.classList.toggle("placed");
-
     }
 }
 
@@ -358,7 +352,7 @@ const placePeg = (e) => {
 
 const pegTouched = (e) => {
 
-    if (solutionSchown()) {blinkReloadBtn(); return}
+    if (solutionDispayed()) {blinkReloadBtn(); return}
 
     if (e.currentTarget.classList.contains('moving')) return;
 
@@ -383,12 +377,6 @@ const stopMoving = (e) => {
  
 const setBoardHeight = (vh) => {
 
-    // if (vertical()) {
-    //     document.documentElement.style.setProperty('--board-height', Math.ceil(document.documentElement.innerHeight * vh / 4) * 4 + 'px');
-    // } else {
-    //     document.documentElement.style.setProperty('--board-height', Math.ceil(window.innerWidth * vh / 4) * 4 + 'px');
-    // }
-
     if (vertical()) {
         document.documentElement.style.setProperty('--board-height', Math.ceil(document.documentElement.clientHeight * vh / 4) * 4 + 'px');
     } else {
@@ -397,12 +385,6 @@ const setBoardHeight = (vh) => {
 }
 
 const setBoardWidth = (vw) => {
-
-    // if (window.innerHeight > window.innerWidth && touchScreen()) {
-    //     document.documentElement.style.setProperty('--board-width', Math.ceil(window.innerWidth * vw / 4) * 4 + 'px');
-    // } else {
-    //     document.documentElement.style.setProperty('--board-width', Math.ceil(window.innerHeight * vw / 4) * 4 + 'px');
-    // } 
 
     if (window.innerHeight > window.innerWidth && touchScreen()) {
         document.documentElement.style.setProperty('--board-width', Math.ceil(document.documentElement.clientWidth * vw / 4) * 4 + 'px');
@@ -437,6 +419,11 @@ const phoneX = () => {
     return (screen.width < 460 || screen.height < 460) && screen.height/screen.width > 2;
 }
 
+const iPad = () => {
+
+    return (screen.width/screen.height).toFixed(1) >= 0.7;
+}
+
 const fullScreen = () => {
     return window.navigator.standalone || (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1);
 }
@@ -453,18 +440,14 @@ const setTheBoard = () => {
 
     setBoardHeight(0.97);
 
-    if (touchScreen()) {setBoardWidth(0.80); return}
+    if (touchScreen()) {iPad() ? setBoardWidth(0.8) : setBoardWidth(0.97); return}
     
     setBoardWidth(0.60);
-
 }
 
 const showBoard = () => {
 
     const delays = Array.from({length: numberOfTurns() + 1}, (_, i) => i/6);
-
-    // const delays = Array.from({length: numberOfTurns() + 1}, (_, i) => 0/6);
-
 
         document.querySelectorAll(".turn").forEach((turn, i) => {
             if (getComputedStyle(turn).getPropertyValue("display") != 'none') {
@@ -483,9 +466,6 @@ const showPegs = () => {
 
     const delays = Array.from({length: numberOfPegs()}, (_, i) => i/6);
 
-    // const delays = Array.from({length: numberOfPegs()}, (_, i) => 0/6);
-
-
     document.querySelectorAll(".peg").forEach((peg, i) => {
         peg.style.transition = `opacity 0s linear ${delays.shift()}s, transform 0.3s ease-in-out`; 
     });  
@@ -495,31 +475,11 @@ const showPegs = () => {
     });     
 }
 
-// const disabteTitleAnimation = () => {
-//     document.querySelectorAll('.front, .back ').forEach((side) => {
-//         side.style.transition = 'all 0s';
-//     });
-// }
-
-// const enableTitleAnimation = () => {
-//     document.querySelectorAll('.front, .back ').forEach((side) => {
-//         side.style.transition = '';
-//     });
-// }
-
 const showUp = () => {
-
-        // disabteTitleAnimation();
 
         showBoard();
 
-
-        // enableTitleAnimation();
-
-        setTimeout(showPegs, (numberOfTurns() + 1) / numberOfPegs() * 1000);
-
-        // showPegs(); //
-        
+        setTimeout(showPegs, (numberOfTurns() + 1) / numberOfPegs() * 1000);    
 }
 
 const disableTouchMove = () => {
@@ -529,12 +489,9 @@ const disableTouchMove = () => {
 
 }
 
-
 const init = () => {
 
-
-
-    // disableTouchMove();
+    disableTouchMove();
 
     setTheBoard();
 
@@ -545,9 +502,6 @@ const init = () => {
     showUp();
 
     enablePegs();
-
-    // preview(); //
-
 }
 
 window.onload = () => {

@@ -8,9 +8,9 @@ Following the hints, solve the secret code consisting of four different colors.
 
 The object of the game is to solve the secret code consisting of four different colors.
 
-_**A black dot**_ means that one of the colors is guessed and located in the correct position.  
+_A black dot_ means that one of the colors is guessed and located in the correct position.  
 
-_**A white dot**_ means that one of the colors is guessed but located in the wrong position.
+_A white dot_ means that one of the colors is guessed but located in the wrong position.
 
 ## Screenshot
 

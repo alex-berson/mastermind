@@ -16,23 +16,18 @@
     --board-height: 80vmax;
     --board-width: 80vmin;
 
-
     --notch-size-outer: 10px;
     --notch-size-inner: 9px;
 
     --offset: 2px;
 
     --board-size: 8;
-
     --hole-size: 1.5;
-
     --hole-size-bc: 3.9;
 
     --background-color: white;
     --hole-color: #dcdcdc;
-
 }
-
 
 body{
     font-family: 'Liberation', 'Times New Roman', Times, serif;
@@ -43,12 +38,7 @@ body{
     display: flex;
     flex-direction: column;
     width: var( --board-width);
-
-    /* height: calc(var(--board-height) - 24px); */
-
     height: calc(var(--board-height) - (var(--board-size) - 2) * var(--offset));
-
-    /* border: 1px solid black; */
 
     position: absolute;
     top: 50%;
@@ -59,21 +49,14 @@ body{
 
 .turn{
     display: flex;
-
-    /* margin-bottom: -2px; */
-
     margin-bottom: calc(var(--offset) * -1);
-
     margin-left: 1px;
-
     opacity: 0;
 }
 
 .code-outer{
     background: black;
     width: calc(var(--board-width) / 4 * 3);
-    /* height: calc(var(--board-height) / var(--board-size) + 2px); */
-
     height: calc(var(--board-height) / var(--board-size) + var(--offset));
 
     clip-path: 
@@ -99,7 +82,6 @@ body{
             var(--notch-size-outer) 100%, 
             0% calc(100% - var(--notch-size-outer))
         );
-
 }
 
 .code-inner{
@@ -137,11 +119,9 @@ body{
             var(--notch-size-inner) 100%, 
             0% calc(100% - var(--notch-size-inner))
         );
-
 }
 
 .hole-code{
-    /* height: calc(var(--board-height) / 16); */
     height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
     width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
     border-radius: 50%;
@@ -151,21 +131,13 @@ body{
     font-weight: bold;
     font-size: 1.5em;
     box-sizing: border-box;
-    /* transition: background-color 0s 0.3s ease-in-out; */
-
-
-
 }
 
 .bc-outer{
     background: black;
     width: calc(var(--board-width) / 4);
-    /* height: calc(var(--board-height) / var(--board-size) + 2px); */
-
     height: calc(var(--board-height) / var(--board-size) + var(--offset));
-
     margin-left: calc(-1 * var(--offset));
-
 
     clip-path: 
         polygon(
@@ -235,16 +207,9 @@ body{
     height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size-bc));
     width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size-bc));
 
-    /* height: calc(var(--board-height) / 64);
-    width: calc(var(--board-height) / 64); */
-
     border-radius: 50%;
     background: var(--hole-color);
     box-sizing: border-box;
-
-    /* transition: background-color 0.5s linear, border 0.5s linear; */
-
-
 }
 
 .white{
@@ -261,14 +226,7 @@ body{
     align-items: flex-end;
     justify-content: space-evenly;
     width: calc(var(--board-width));
-    /* height: calc(var(--board-height) / var(--board-size) + var(--offset)); */
-
     height: calc(var(--board-height) / var(--board-size) - 10px);
-
-    /* height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)); */
-
-
-
 }
 
 .peg{
@@ -280,12 +238,7 @@ body{
     font-weight: bold;
     font-size: 1.5em;
     transition: transform 0.3s ease-in-out;
-
     opacity: 0;
-}
-
-.peg:hover{
-    cursor: pointer;
 }
 
 .moving{
@@ -295,18 +248,23 @@ body{
 .color-a{
     background: #e23838;
 }
+
 .color-b{
     background: #5ebd3e;
 }
+
 .color-c{
     background: #f78200;
 }
+
 .color-d{
     background: #009cdf;
 }
+
 .color-e{
     background: #ffb900;
 }
+
 .color-f{
     background: #973999;
 }
@@ -316,17 +274,15 @@ body{
 }
 
 #label{
-
     position: absolute;
     top: 50%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-
 }
 
 #title{
-    font-size: 12vmin;
+    font-size: 12.1vmin;
     font-weight: bold;
     margin: 0;
     text-align: center;
@@ -339,7 +295,6 @@ body{
     text-align: center;
     margin-top: -0.7em;
     margin-bottom: -0.3em;
-
     color: gray;
 }
 
@@ -349,43 +304,27 @@ body{
     justify-content: space-evenly;
     width: calc(var(--board-width) / 4 * 3 - var(--offset) * 2);
     height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));    
-
 }
 
 img{
-    /* width: calc(var(--board-height) / 16);
-    height: calc(var(--board-height) / 16); */
     height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
     width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
     justify-self: end;
     opacity: 0.2;
-    transition: opacity 0.6s ease-in-out;
-    
-    /* filter: invert(84%) sepia(2%) saturate(4%) hue-rotate(324deg) brightness(93%) contrast(88%); */
-    /* filter: invert(0%) sepia(86%) saturate(7496%) hue-rotate(56deg) brightness(81%) contrast(98%); */
-    
+    transition: opacity 0.6s ease-in-out;  
 }
-
 
 @media (min-width: 460px) and (min-height: 460px){
 
     :root{
-
-        /* --notch-size-outer: 20px;
-        --notch-size-inner: 18px; */
-
         --notch-size-outer: 15px;
         --notch-size-inner: 13px;
-
-
         --offset: 3px;
-
         --hole-size: 1.5;
-
     }
 
     #title{
-        font-size: 9.6vmin;
+        font-size: 9.7vmin;
         font-weight: bold;
         margin: 0;
         text-align: center;
@@ -393,18 +332,17 @@ img{
     }
     
     #subtitle{
+
         font-size: 2vmin;
         margin: 0;
         text-align: center;
-        margin-top: -0.7em;
+        margin-top: -0.9em;
         margin-bottom: -0.3em;
-    
         color: gray;
-    }
-    
+    }   
 }
 
-@media (min-width: 1150px), (min-height: 1150px){
+@media (min-width: 1200px), (min-height: 1200px){
 
     :root{
         --notch-size-outer: 20px;
@@ -415,36 +353,22 @@ img{
 @media (hover: hover){
 
     :root{
-
         --notch-size-outer: 10px;
         --notch-size-inner: 8px;
     }
 
-    /* @media (min-width: 800), (min-height: 800){
-        :root{
-
-            --notch-size-outer: 40px;
-            --notch-size-inner: 18px;
-        }
-
-    } */
-
     #title{
         font-size: 4.1vmax;
-
     }
     
     #subtitle{
         font-size: 0.8vmax;
- 
     }
 }
-
 
 @media (orientation: landscape) and (hover: none){
 
     body {
-
       position: absolute;
       top: 48%;
       left: 50%;
