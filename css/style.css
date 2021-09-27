@@ -172,7 +172,7 @@ body{
     justify-items: center;
     align-items: center;
     background: var(--background-color);
-
+    
     width: calc(var(--board-width) / 4 - var(--offset) * 2);
     height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));
     left: var(--offset);

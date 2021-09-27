@@ -1,17 +1,19 @@
 let code = [];
 let guess = [];
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => {
-          console.log('Service worker registered!', reg);
-        })
-        .catch(err => {
-          console.log('Service worker registration failed: ', err);
+setServiceWorker = () => {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => {
+                    console.log('Service worker registered!', reg);
+                })
+                .catch(err => {
+                    console.log('Service worker registration failed: ', err);
+                });
         });
-    });
-}  
+    } 
+}
 
 const generateCode = () => {
 
@@ -483,11 +485,13 @@ const showUp = () => {
 const disableTouchMove = () => {
 
     const preventDefault = (e) => e.preventDefault();
-    document.body.addEventListener('touchmove', preventDefault, { passive: false });
+    document.body.addEventListener('touchstart', preventDefault, { passive: false });
 
 }
 
 const init = () => {
+
+    setServiceWorker();
 
     disableTouchMove();
 
