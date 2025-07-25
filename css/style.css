@@ -1,45 +1,60 @@
-@import url("flip.css");
-
 @font-face {
-    font-family: 'Liberation';
-    src: url(../fonts/LiberationSerif-Regular.ttf);
+    font-family: 'Liberation Serif';
+    src: url(../fonts/liberation-serif-regular.woff2);
 }
 
 @font-face {
-    font-family: 'Liberation';
-    src: url(../fonts/LiberationSerif-Bold.ttf);
+    font-family: 'Liberation Serif';
+    src: url(../fonts/liberation-serif-bold.woff2);
     font-weight: bold;
 }
 
-:root{
-
-    --board-height: 80vmax;
-    --board-width: 80vmin;
-
-    --notch-size-outer: 10px;
-    --notch-size-inner: 9px;
-
+:root {
+    --color0: #dcdcdc;
+    --color1: #e23838;
+    --color2: #5ebd3e;
+    --color3: #f78200;
+    --color4: #009cdf;
+    --color5: #ffb900;
+    --color6: #973999;
     --offset: 2px;
-
     --board-size: 8;
-    --hole-size: 1.5;
-    --hole-size-bc: 3.9;
-
-    --background-color: white;
-    --hole-color: #dcdcdc;
+    --board-height: 97vmax;
+    --board-width: 97vmin;
+    --notch-outer-size: 10px;
+    --notch-inner-size: 9px;
+    --hole-code-size: 1.5;
+    --hole-clue-size: 3.9;
+    --outer: polygon(
+                0% var(--notch-outer-size), 
+                var(--notch-outer-size) 0%, 
+                calc(100% - var(--notch-outer-size)) 0%, 
+                100% var(--notch-outer-size), 
+                100% calc(100% - var(--notch-outer-size)), 
+                calc(100% - var(--notch-outer-size)) 100%, 
+                var(--notch-outer-size) 100%, 
+                0% calc(100% - var(--notch-outer-size))
+             );
+    --inner: polygon(
+                0% var(--notch-inner-size), 
+                var(--notch-inner-size) 0%, 
+                calc(100% - var(--notch-inner-size)) 0%, 
+                100% var(--notch-inner-size), 
+                100% calc(100% - var(--notch-inner-size)), 
+                calc(100% - var(--notch-inner-size)) 100%, 
+                var(--notch-inner-size) 100%, 
+                0% calc(100% - var(--notch-inner-size))
+             );
+    --section-height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));
+    --hole-size: calc((var(--section-height)) / var(--hole-code-size));
 }
 
-body{
-    font-family: 'Liberation', 'Times New Roman', Times, serif;
-    background: var(--background-color);
-}
-
-.board{
-    display: flex;
-    flex-direction: column;
-    width: var( --board-width);
-    height: calc(var(--board-height) - (var(--board-size) - 2) * var(--offset));
-
+body {
+    font-family: 'Liberation Serif', serif;
+    background-color: white;
+    overflow: hidden;
+    cursor: default;
+    margin: 0;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -47,181 +62,153 @@ body{
     transform: translate(-50%, -50%);
 }
 
-.turn{
+.board {
+    display: flex;
+    flex-direction: column;
+    width: var( --board-width);
+    height: calc(var(--board-height) - (var(--board-size) - 2) * var(--offset));
+    margin: auto;
+}
+
+.row {
     display: flex;
     margin-bottom: calc(var(--offset) * -1);
-    margin-left: 1px;
+    margin-left: calc(var(--offset) / 2);
     opacity: 0;
 }
 
-.code-outer{
-    background: black;
+.code-outer {
     width: calc(var(--board-width) / 4 * 3);
     height: calc(var(--board-height) / var(--board-size) + var(--offset));
-
-    clip-path: 
-        polygon(
-            0% var(--notch-size-outer), 
-            var(--notch-size-outer) 0%, 
-            calc(100% - var(--notch-size-outer)) 0%, 
-            100% var(--notch-size-outer), 
-            100% calc(100% - var(--notch-size-outer)), 
-            calc(100% - var(--notch-size-outer)) 100%, 
-            var(--notch-size-outer) 100%, 
-            0% calc(100% - var(--notch-size-outer))
-        );
-
-    -webkit-clip-path: 
-        polygon(
-            0% var(--notch-size-outer), 
-            var(--notch-size-outer) 0%, 
-            calc(100% - var(--notch-size-outer)) 0%, 
-            100% var(--notch-size-outer), 
-            100% calc(100% - var(--notch-size-outer)), 
-            calc(100% - var(--notch-size-outer)) 100%, 
-            var(--notch-size-outer) 100%, 
-            0% calc(100% - var(--notch-size-outer))
-        );
+    background-color: black;
+    clip-path: var(--outer);
 }
 
-.code-inner{
+.code-inner {
     display: flex;
     position: relative;
     align-items: center;
     justify-content: space-evenly;
-    background: var(--background-color);
-
+    background-color: white;
     width: calc(var(--board-width) / 4 * 3 - var(--offset) * 2);
-    height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));
+    height: var(--section-height);
     left: var(--offset);
     top: var(--offset);
-
-    clip-path: 
-        polygon(
-            0% var(--notch-size-inner), 
-            var(--notch-size-inner) 0%, 
-            calc(100% - var(--notch-size-inner)) 0%, 
-            100% var(--notch-size-inner), 
-            100% calc(100% - var(--notch-size-inner)), 
-            calc(100% - var(--notch-size-inner)) 100%, 
-            var(--notch-size-inner) 100%, 
-            0% calc(100% - var(--notch-size-inner))
-        );
-
-    -webkit-clip-path: 
-        polygon(
-            0% var(--notch-size-inner), 
-            var(--notch-size-inner) 0%, 
-            calc(100% - var(--notch-size-inner)) 0%, 
-            100% var(--notch-size-inner), 
-            100% calc(100% - var(--notch-size-inner)), 
-            calc(100% - var(--notch-size-inner)) 100%, 
-            var(--notch-size-inner) 100%, 
-            0% calc(100% - var(--notch-size-inner))
-        );
+    clip-path: var(--inner);
 }
 
-.hole-code{
-    height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
-    width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
+.hole-code {
+    height: var(--hole-size);
+    width: var(--hole-size);
+    background-color: var(--color0);
     border-radius: 50%;
-    background: var(--hole-color);
-    text-align: center;
-    line-height: calc(var(--board-height) / 16);
-    font-weight: bold;
-    font-size: 1.5em;
-    box-sizing: border-box;
 }
 
-.bc-outer{
-    background: black;
+.row:not(:first-child) .hole-code:not(.occupied) {
+    cursor: pointer;
+}
+
+.clue-outer {
     width: calc(var(--board-width) / 4);
     height: calc(var(--board-height) / var(--board-size) + var(--offset));
-    margin-left: calc(-1 * var(--offset));
-
-    clip-path: 
-        polygon(
-            0% var(--notch-size-outer), 
-            var(--notch-size-outer) 0%, 
-            calc(100% - var(--notch-size-outer)) 0%, 
-            100% var(--notch-size-outer), 
-            100% calc(100% - var(--notch-size-outer)), 
-            calc(100% - var(--notch-size-outer)) 100%, 
-            var(--notch-size-outer) 100%, 
-            0% calc(100% - var(--notch-size-outer))
-        );
-
-    -webkit-clip-path: 
-        polygon(
-            0% var(--notch-size-outer), 
-            var(--notch-size-outer) 0%, 
-            calc(100% - var(--notch-size-outer)) 0%, 
-            100% var(--notch-size-outer), 
-            100% calc(100% - var(--notch-size-outer)), 
-            calc(100% - var(--notch-size-outer)) 100%, 
-            var(--notch-size-outer) 100%, 
-            0% calc(100% - var(--notch-size-outer))
-        );
+    background-color: black;
+    margin-left: calc(var(--offset) * -1);
+    clip-path: var(--outer);
 }
 
-.bc-inner{
+.clue-inner {
     display: grid;
     position: relative;
-    gap: 5px;
     grid-template-columns: auto auto;
-    justify-items: center;
-    align-items: center;
-    background: var(--background-color);
-    
+    place-items: center;
     width: calc(var(--board-width) / 4 - var(--offset) * 2);
-    height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));
+    height: var(--section-height);
+    gap: 5px;
+    background-color: white;
     left: var(--offset);
     top: var(--offset);
-
-    clip-path: 
-        polygon(
-            0% var(--notch-size-inner), 
-            var(--notch-size-inner) 0%, 
-            calc(100% - var(--notch-size-inner)) 0%, 
-            100% var(--notch-size-inner), 
-            100% calc(100% - var(--notch-size-inner)), 
-            calc(100% - var(--notch-size-inner)) 100%, 
-            var(--notch-size-inner) 100%, 
-            0% calc(100% - var(--notch-size-inner))
-        );
-
-    -webkit-clip-path: 
-        polygon(
-            0% var(--notch-size-inner), 
-            var(--notch-size-inner) 0%, 
-            calc(100% - var(--notch-size-inner)) 0%, 
-            100% var(--notch-size-inner), 
-            100% calc(100% - var(--notch-size-inner)), 
-            calc(100% - var(--notch-size-inner)) 100%, 
-            var(--notch-size-inner) 100%, 
-            0% calc(100% - var(--notch-size-inner))
-        );
+    clip-path: var(--inner);
 }
 
-.hole-bc{
-    height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size-bc));
-    width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size-bc));
-
-    border-radius: 50%;
-    background: var(--hole-color);
+.hole-clue {
     box-sizing: border-box;
+    height: calc((var(--section-height)) / var(--hole-clue-size));
+    width: calc((var(--section-height)) / var(--hole-clue-size));
+    background-color: var(--color0);
+    border-radius: 50%;
 }
 
-.white{
-    background: white;
-    border: 1px solid black;
+.flip-container {
+    width: calc(var(--board-width) / 4 * 3 - var(--offset) * 2);
+    height: var(--section-height);
+    background-color: transparent;
+    perspective: 1000px;
 }
 
-.black{
-    background: black;
+.flip-container.flip .flipper {
+    transform: rotateX(180deg);
 }
 
-.pegs{
+.flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+.front {
+    display: grid;
+    place-content: center;
+}
+
+.back {
+    transform: rotateX(180deg);
+}
+
+#title {
+    font-size: 12.2vmin;
+    font-weight: bold;
+    margin: 0;
+    margin-top: -2vmin;
+}
+
+#subtitle {
+    font-size: 3vmin;
+    margin-top: -0.7em;
+    margin-bottom: -0.3em;
+    color: gray;
+}
+
+#solution {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: calc(var(--board-width) / 4 * 3 - var(--offset) * 2);
+    height: var(--section-height);
+}
+
+.row.header .clue-inner {
+    grid-template-columns: none;
+}
+
+.button {
+    height: var(--hole-size);
+    width: var(--hole-size);
+    margin-left: calc((var(--board-width) / 4 - var(--offset) * 2) / -50);
+    opacity: 0.137;
+}
+
+.pegs {
     display: flex;
     align-items: flex-end;
     justify-content: space-evenly;
@@ -229,160 +216,225 @@ body{
     height: calc(var(--board-height) / var(--board-size) - 10px);
 }
 
-.peg{
-    height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
-    width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
+.peg {
+    height: var(--hole-size);
+    width: var(--hole-size);
     border-radius: 50%;
-    text-align: center;
-    line-height: calc(var(--board-height) / 16);
-    font-weight: bold;
-    font-size: 1.5em;
-    transition: transform 0.3s ease-in-out;
     opacity: 0;
 }
 
-.moving{
+[data-color="1"] {
+    background-color: var(--color1) !important;
+}
+
+[data-color="2"] {
+    background-color: var(--color2) !important;
+}
+
+[data-color="3"] {
+    background-color: var(--color3) !important;
+}
+
+[data-color="4"] {
+    background-color: var(--color4) !important;
+}
+
+[data-color="5"] {
+    background-color: var(--color5) !important;
+}
+
+[data-color="6"] {
+    background-color: var(--color6) !important;
+}
+
+.black {
+    background-color: black;
+}
+
+.white {
+    background-color: white;
+    border: 1px solid black;
+}
+
+.move {
     z-index: 100;
+    transition: transform 0.3s ease-in-out;
 }
 
-.color-a{
-    background: #e23838;
+.visible {
+    opacity: 1;
 }
 
-.color-b{
-    background: #5ebd3e;
+.enabled {
+    cursor: pointer;
 }
 
-.color-c{
-    background: #f78200;
+.enabled .button {
+    opacity: 1;
 }
 
-.color-d{
-    background: #009cdf;
+.selected {
+    opacity: 0.4;
 }
 
-.color-e{
-    background: #ffb900;
-}
-
-.color-f{
-    background: #973999;
-}
-
-.hidden {
+.rotate {
     display: none;
+    width: 50vmin;
+    height: 50vmin;
+    margin: auto;
 }
 
-#label{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
+.rotate img {
+    width: 100%;
+    height: 100%;
 }
 
-#title{
-    font-size: 12.1vmin;
-    font-weight: bold;
-    margin: 0;
-    text-align: center;
-    margin-top: -2vmin;
+.blink {
+    animation: blink 0.1s ease-in-out forwards;
 }
 
-#subtitle{
-    font-size: 3vmin;
-    margin: 0;
-    text-align: center;
-    margin-top: -0.7em;
-    margin-bottom: -0.3em;
-    color: gray;
-}
-
-#solution{
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    width: calc(var(--board-width) / 4 * 3 - var(--offset) * 2);
-    height: calc(var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset));    
-}
-
-img{
-    height: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
-    width: calc((var(--board-height) / var(--board-size) - var(--offset) * 2 + var(--offset)) / var(--hole-size));
-    justify-self: end;
-    opacity: 0.2;
-    transition: opacity 0.6s ease-in-out;  
-}
-
-@media (min-width: 460px) and (min-height: 460px){
-
-    :root{
-        --notch-size-outer: 15px;
-        --notch-size-inner: 13px;
-        --offset: 3px;
-        --hole-size: 1.5;
-    }
-
-    #title{
-        font-size: 9.7vmin;
-        font-weight: bold;
-        margin: 0;
-        text-align: center;
-        margin-top: -2vmin;
-    }
+@keyframes blink {
     
-    #subtitle{
+    0% {
+        opacity: 1; 
+    }
+  
+    50% {
+        opacity: 0.5;
+    } 
 
-        font-size: 2vmin;
-        margin: 0;
-        text-align: center;
-        margin-top: -0.9em;
-        margin-bottom: -0.3em;
-        color: gray;
-    }   
+    100% {
+        opacity: 1; 
+    } 
 }
 
-@media (min-width: 1200px), (min-height: 1200px){
-
-    :root{
-        --notch-size-outer: 20px;
-        --notch-size-inner: 18px;
-    }
-}
-
-@media (hover: hover){
-
-    :root{
-        --notch-size-outer: 10px;
-        --notch-size-inner: 8px;
-    }
-
-    #title{
-        font-size: 4.1vmax;
-    }
-    
-    #subtitle{
-        font-size: 0.8vmax;
-    }
-}
-
-@media (orientation: landscape) and (hover: none){
+@media (prefers-color-scheme: dark) {
 
     body {
-      position: absolute;
-      top: 48%;
-      left: 50%;
-      margin-right: -50%;
-      transform: rotate(-90deg) translate(-50%, -50%);
+        background-color: black;
+    }
+
+    #title {
+        color: whitesmoke;
+    }
+    
+    #subtitle {
+        color: lightgray;
+    }
+
+    .button {
+        filter: invert(100%);
+        opacity: 0.412;
+    }
+
+    .enabled .button {
+        opacity: 0.961;
+    }
+
+    .code-outer, .clue-outer {
+        background-color: whitesmoke;
+    }
+
+    .code-inner, .clue-inner {
+        background-color: black;
+    }
+
+    .hole-code, .hole-clue {
+        background-color: dimgray;
+    }
+
+    .white {
+        background: whitesmoke;
+    }
+    
+    .black {
+        background: black;
+        border: 1px solid whitesmoke;
+    }
+
+    .selected {
+        opacity: 0.6;
+    }
+
+    .rotate {
+        filter: invert(100%);
+        opacity: 0.961;
+    }
+
+    @keyframes blink {
+
+        0% {
+            opacity: 0.961; 
+        }
+    
+        50% {
+            opacity: 0.412;
+        } 
+
+        100% {
+            opacity: 0.961; 
+        } 
+    }
+}
+
+@media (min-width: 460px) and (min-height: 460px) {
+
+    :root {
+        --notch-outer-size: 15px;
+        --notch-inner-size: 13px;
+        --offset: 3px;
+    }
+
+    #title {
+        font-size: calc(var(--board-width) / 4 * 3 / 6.2);
+    }
+    
+    #subtitle {
+        font-size: 2vmin;
+    }
+}
+
+@media (min-width: 1200px), (min-height: 1200px) {
+
+    :root {
+        --notch-outer-size: 20px;
+        --notch-inner-size: 18px;
+    }
+}
+
+@media (hover: hover) {
+
+    :root {
+        --notch-outer-size: 10px;
+        --notch-inner-size: 8px;
+    }
+
+    #title {
+        font-size: calc(var(--board-width) / 4 * 3 / 6);
+
+    }
+    
+    #subtitle {
+        font-size: calc(var(--board-height) / 68);
+    }
+}
+
+@media (orientation: landscape) and ((hover: none) or (pointer: coarse)) {
+
+    .board {
+        display: none;
+    }
+
+    .rotate {
+        display: block;
     }
 }
 
 .noselect {
--webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-        -webkit-user-select: none; 
-           -moz-user-select: none; 
-            -ms-user-select: none; 
-                user-select: none; 
-}
- 
+    -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+} 
