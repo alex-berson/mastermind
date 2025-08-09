@@ -1,514 +1,396 @@
-let code = [];
-let guess = [];
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-setServiceWorker = () => {
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => {
-                    console.log('Service worker registered!', reg);
-                })
-                .catch(err => {
-                    console.log('Service worker registration failed: ', err);
-                });
-        });
-    } 
+const touchScreen = () => matchMedia('(hover: none)').matches || matchMedia('(pointer: coarse)').matches;
+
+const shuffle = (array) => {
+
+    for (let i = array.length - 1; i > 0; i--) {
+
+        let j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]]; 
+    }
+
+    return array;
+}
+
+const portraitMode = () => {
+
+    return new Promise(resolve => {
+
+        let landscape = window.innerHeight < window.innerWidth;
+
+        if (touchScreen() && landscape) {
+
+            window.addEventListener('orientationchange', () => setTimeout(resolve, 500), {once: true});
+
+            return;
+        }
+
+        resolve();
+    });
+}
+
+const setBoardSize = () => {
+
+    const fullScreen = () => window.navigator.standalone || nativeApp();
+    const nativeApp = () => !document.URL.startsWith('http://') && !document.URL.startsWith('https://');
+
+    let n = fullScreen() ? screen.width / screen.height < 0.5 ? 10 : 9 : 8;
+    let scaleX = touchScreen() ? screen.width > 460 && screen.height > 460 ? 0.75 : 0.97 : 0.6 * window.innerHeight / window.innerWidth;
+    let scaleY = nativeApp() && screen.width / screen.height < 0.5 ? 1 : 0.97;
+
+    document.documentElement.style.setProperty('--board-size', n);
+    document.documentElement.style.setProperty('--board-width', `${Math.ceil(document.documentElement.clientWidth * scaleX / 4) * 4}px`);
+    document.documentElement.style.setProperty('--board-height', `${Math.ceil(document.documentElement.clientHeight * scaleY / n) * n}px`);
 }
 
 const generateCode = () => {
 
-    const abc = "abcdef";
+    let code = shuffle([1,2,3,4,5,6]).slice(0, 4);
+    let holes = document.querySelectorAll('#solution .hole-code');
 
-    code = abc.split("").map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]).splice(0, 4);
+    holes.forEach(hole => hole.dataset.color = code.shift());
 }
 
-const fillCode = () => {
-    document.querySelector('#solution').querySelectorAll('.hole-code').forEach((hole, i) => {
-        hole.className = '';
-        hole.classList.add('hole-code', `color-${code[i]}`);
-    });
-}
+const showBoard = async () => {
 
-const bullsAndCows = () => {
+    let header = document.querySelector('.header');
+    let pegs = [...document.querySelectorAll('.peg')];
+    let n = Number(getComputedStyle(document.documentElement).getPropertyValue('--board-size')) - 2;
 
-    let bulls = 0;
-    let cows = 0;
+    header.classList.add('visible');
 
-    for (let i = 0; i < code.length; i++){
-        for (let j = 0; j < guess.length; j++){
-            if (code[i] == guess[j]) i == j ? bulls++ : cows++;
-        }
+    for (let i = 0; i < n; i++) {
+
+        let row = createRow();
+
+        await sleep(150);
+
+        row.classList.add('visible');
     }
 
-    return [bulls, cows];
-}
+    for (let peg of pegs) {
 
-const totalGuessed = () => {
+        await sleep(150);
 
-    let [bulls, cows] = bullsAndCows();
-    return bulls + cows;
-}
-
-const turn = () => {
-
-    for (let [i, turn] of  document.querySelectorAll('.turn:not(.hidden)').entries()) {
-
-        if (getComputedStyle(turn.querySelector('.hole-code')).getPropertyValue("background-color") != "rgb(220, 220, 220)" && i != 0) {
-
-            return numberOfTurns() - i + 2;
-        }       
-    }
-
-    return 1;
-}
-
-const numberOfTurns = () => {
-    return document.querySelectorAll('.turn:not(.hidden)').length - 1;
-}
-
-const numberOfPegs = () => {
-    return document.querySelectorAll('.peg').length;
-}
-
-const touchScreen = () => {
-    return matchMedia('(hover: none)').matches;
-}
-
-const disablePegs = () => {
-    for (peg of document.querySelectorAll('.peg')){
-        if (touchScreen()){
-            peg.removeEventListener("touchstart", pegTouched);
-        } else {
-            peg.removeEventListener("mousedown", pegTouched);
-            peg.style.cursor = "";
-        }
+        peg.classList.add('visible');
     }
 }
 
-const enablePegs = () => {
-    for (peg of document.querySelectorAll('.peg')){
-        if (touchScreen()){
-            peg.addEventListener("touchstart", pegTouched);
-        } else {
-            peg.addEventListener("mousedown", pegTouched);
-            peg.style.cursor = "pointer";
-        }
+const createRow = () => {
 
-        peg.addEventListener('transitionend', stopMoving);
-    }
-}
+    let pegs = document.querySelector('.pegs');
+    let board = document.querySelector('.board');
+    let template = document.querySelector('.row-template');
+    let clone = template.content.cloneNode(true);
+    let row = clone.querySelector('.row');
 
-const disableReload = () => {
-
-    const reloadBtn = document.querySelector('img');
-    reloadBtn.style.transition = 'opacity 0s';
-    reloadBtn.style.opacity = 0.2;
-
-    if (touchScreen()){
-        reloadBtn.parentElement.removeEventListener("touchstart", reload);
-    } else {
-        reloadBtn.parentElement.removeEventListener("mousedown", reload);
-        reloadBtn.parentElement.style.cursor = "";
-    }
-}
-
-const enableReload = () => {
-
-    const reloadBtn = document.querySelector('img');
-    reloadBtn.style.transition = 'opacity 1s';
-    reloadBtn.style.opacity = 1;
-
-    if (touchScreen()){
-        reloadBtn.parentElement.addEventListener("touchstart", reload);
-    } else {
-        reloadBtn.parentElement.addEventListener("mousedown", reload);
-        reloadBtn.parentElement.style.cursor = "pointer";
-    }
-}
-
-const flipTitle = () => {
-    document.querySelector(".flip-container").classList.toggle("flip");
-}
-
-const clearRow = () => {
-
-    document.querySelector(`.turn:nth-last-of-type(${turn()})`).querySelectorAll('.hole-bc').forEach(hole => {
-        hole.style = '';
-        hole.className = 'hole-bc';
-    });
-
-    document.querySelector(`.turn:nth-last-of-type(${turn()})`).querySelectorAll('.hole-code').forEach(hole => {
-        hole.className = 'hole-code';
-    });
-}
-
-const clearBoard = () => {
-
-    if (turn() == 1) {
-
-        generateCode();
-        fillCode();
-        enablePegs();
-
-        clearInterval(cleanInterval);
-
-    } else {
-
-        clearRow();
-    }
-}
-
-const reload = () => {
-
-    disableReload();
-
-    disablePegs();
-
-    flipTitle();
+    board.insertBefore(clone, pegs);
     
-    cleanInterval = setInterval(clearBoard, 150);
+    return row;
 }
 
-const solutionDispayed = () => {
-    return document.querySelector(".flip-container").classList.contains('flip');
+const selectHole = (e) => {
+
+    let hole = e.currentTarget;
+    let rows = document.querySelectorAll('.row:not(.completed)');
+    let row = rows[rows.length - 1];
+    let holes = row.querySelectorAll('.hole-code');
+    let valid = [...holes].includes(hole);
+    let selected = row.querySelector('.selected');
+    let occupied = hole.classList.contains('occupied');
+
+    if (gameOver() || !valid || occupied) return;
+    if (selected) selected.classList.remove('selected');
+    if (hole != selected) hole.classList.add('selected');
 }
 
-const blinkReloadBtn = () => {
-    const reloadBtn = document.querySelector('img');
-    reloadBtn.style.transition = 'opacity 0.05s';
-    reloadBtn.style.opacity = 0.5;
+const selectPeg = (e) => {
 
-    setTimeout(() => {
-        const reloadBtn = document.querySelector('img');
-        reloadBtn.style.opacity = 1;                 
-    }, 100);
-}
+    let peg = e.currentTarget;
+    let moving = peg.classList.contains('move');
+    let visible = peg.classList.contains('visible');
 
-const pegVisible = (e) => {
-    return getComputedStyle(e.currentTarget).getPropertyValue("opacity") != 0;
-}
+    if (moving || !visible) return;
 
-const gameOver = () => {
-
-    const [bulls, _] = bullsAndCows();
- 
-    return turn() > numberOfTurns() || bulls == 4;
-}
-
-const displayBC = () => {
-
-    const holesBC = document.querySelector(`.turn:nth-last-of-type(${turn() + 1})`).querySelectorAll('.hole-bc');
-
-    const [bulls, cows] = bullsAndCows()
-
-    for (let i = 0; i < bulls; i++){
-        
-        holesBC[i].style.transition = `background-color 0s ${i/3}s`;
-
-        holesBC[i].classList.add("black");
-    }
-
-    for (let i = bulls; i < bulls + cows; i++){
-
-        holesBC[i].style.transition = `background-color 0s ${i/3}s, border 0s ${i/3}s`;
-
-        holesBC[i].classList.add("white");
-    }
-}
-
-const returnPegs = () => {
-
-    const holes = document.querySelector(`.turn:nth-last-of-type(${turn() + 1})`).querySelectorAll('.hole-code');
-
-    for (let peg of document.querySelectorAll('.peg')){
-
-        if (peg.classList.contains("placed")) {
-
-            const rectPeg = peg.getBoundingClientRect();
-
-            for (let hole of holes){
-                const rectHole = hole.getBoundingClientRect();
-
-                if (vertical()) {
-                    if (rectHole.left == rectPeg.left){hole.classList.add(`color-${peg.id}`); break}                                
-                } else {
-                    if (rectHole.top == rectPeg.top){hole.classList.add(`color-${peg.id}`); break}                                
-                }
-            }
-
-            peg.style.transition = 'opacity 0s';
-            peg.style.opacity = 0;
-            peg.style.transform = `translate(0px, 0px)`;
-                
-        }
-    }
-}
-
-const vertical = () => {
-    return window.innerHeight > window.innerWidth || !touchScreen();
-}
-
-const returnPeg = (e) => {
-
-    const holes = document.querySelector(`.turn:nth-last-of-type(${turn() + 1})`).querySelectorAll('.hole-code');
-
-    const rectPeg = e.currentTarget.getBoundingClientRect();
-
-    for (let [i, hole] of holes.entries()) {
-
-        const rectHole = hole.getBoundingClientRect();
-
-        if (vertical() && rectHole.left == rectPeg.left || !vertical() && rectHole.top == rectPeg.top) {
-
-            hole.classList.toggle("occupied");
-
-            e.currentTarget.style.transform = `translate(0px, 0px)`;
-
-            e.currentTarget.classList.toggle("placed");
-        }
-    }
-}
-
-const displayPegs = () => {
-
-    for (let [i, peg] of document.querySelectorAll('.placed').entries()){
-
-        peg.style.transition = `opacity 0s ${i/6}s ease-in-out, transform 0.3s ease-in-out`;
-        peg.style.opacity = 1;
-        peg.classList.toggle("placed");
-    }
-}
-
-const turnDone = () => {
-
-    disablePegs();
-
-    setTimeout(() => {      
-        
-        displayBC();
-
-        returnPegs();
-
-        setTimeout(() => {
-
-            if (gameOver()) {
-
-                flipTitle();
-
-                setTimeout(() => {
-
-                    enableReload();
-
-                    enablePegs();
-
-                }, 300);    
-
-            } else {
-
-                enablePegs();
-                
-            }
-
-            displayPegs();
-            
-        }, 350 * totalGuessed());
-    
-    }, 350);  
-}
-
-const placePeg = (e) => {
-
-    const holes = document.querySelector(`.turn:nth-last-of-type(${turn() + 1})`).querySelectorAll('.hole-code');
-
-    const rectPeg = e.currentTarget.getBoundingClientRect();
-
-    for (let [i, hole] of holes.entries()) {
-
-        if (!hole.classList.contains("occupied")){
-
-            guess[i] = e.currentTarget.id;
-
-            hole.classList.toggle("occupied");
-        
-            const rectHole = hole.getBoundingClientRect();
-
-            if (vertical()) {
-                e.currentTarget.style.transform = `translate(${rectHole.left - rectPeg.left}px, ${rectHole.top - rectPeg.top}px)`;
-            } else {
-                e.currentTarget.style.transform = `translate(${rectPeg.top - rectHole.top}px, ${rectHole.left - rectPeg.left}px)`;
-            }
-
-            e.currentTarget.classList.toggle("placed");
-
-            if (i == 3) {
-
-                turnDone();                  
-            } 
-
-            return;
-        }
-    }
-}
-
-const pegTouched = (e) => {
-
-    if (solutionDispayed()) {blinkReloadBtn(); return}
-
-    if (e.currentTarget.classList.contains('moving')) return;
-
-    e.currentTarget.classList.toggle("moving");
-
-    if (!pegVisible(e)) return;
-
-    if (e.currentTarget.classList.contains("placed")) {
-        returnPeg(e);
+    if (gameOver()) {
+        blinkReset();
         return;
     }
 
-    placePeg(e);
-}
-
-const stopMoving = (e) => {
-
-    if (e.currentTarget.classList.contains('moving')) {
-        e.currentTarget.classList.toggle("moving");
-    }  
-} 
- 
-const setBoardHeight = (vh) => {
-
-    if (vertical()) {
-        document.documentElement.style.setProperty('--board-height', Math.ceil(document.documentElement.clientHeight * vh / 4) * 4 + 'px');
-    } else {
-        document.documentElement.style.setProperty('--board-height', Math.ceil(document.documentElement.clientWidth * vh / 4) * 4 + 'px');
+    if (peg.classList.contains('placed')) {
+        returnPeg(peg);
+        return;
     }
+
+    placePeg(peg);
 }
 
-const setBoardWidth = (vw) => {
+const placePeg = (peg) => {
 
-    if (window.innerHeight > window.innerWidth && touchScreen()) {
-        document.documentElement.style.setProperty('--board-width', Math.ceil(document.documentElement.clientWidth * vw / 4) * 4 + 'px');
-    } else {
-        document.documentElement.style.setProperty('--board-width', Math.ceil(document.documentElement.clientHeight * vw / 4) * 4 + 'px');
-    } 
-}
+    let color = Number(peg.dataset.color);
+    let rows = document.querySelectorAll('.row:not(.completed)');
+    let row = rows[rows.length - 1];
+    let holes = [...row.querySelectorAll('.hole-code')];
+    let hole = row.querySelector('.hole-code.selected:not(.occupied)') ||
+               row.querySelector('.hole-code:not(.occupied)');
+    let pos = holes.indexOf(hole);
+    let pegRect = peg.getBoundingClientRect();
+    let holeRect = hole.getBoundingClientRect();
+    let offsetLeft = holeRect.left - pegRect.left;
+    let offsetTop = holeRect.top - pegRect.top;
 
-const iPhoneXApp = () => {
-    if ((document.URL.indexOf('http://') == -1 && document.URL.indexOf('https://') == -1) && 
-        (screen.width < 460 || screen.height < 460) && 
-        (screen.width/screen.height < 0.5 && screen.height/screen.width > 2)) {
-            return true;
-    } 
-    return false;
-}
+    peg.classList.add('move');
+    hole.classList.add('occupied');
+    peg.style.transform = `translate(${offsetLeft}px, ${offsetTop}px)`;
 
-const setBoardSize = (n) => {
+    let occupied = row.querySelectorAll('.hole-code.occupied');
 
-    document.documentElement.style.setProperty('--board-size', n);
-
-    for (let i = 0; i < 10 - n; i++) {
-        document.querySelector(`.turn:nth-child(${i + 2})`).classList.add('hidden');
-    }
-}
-
-const phone = () => {
-    return (screen.width < 460 || screen.height < 460) && screen.height/screen.width < 2;
-}
-
-const phoneX = () => {
-    return (screen.width < 460 || screen.height < 460) && screen.height/screen.width > 2;
-}
-
-const iPad = () => {
-
-    return (screen.width/screen.height).toFixed(1) >= 0.7;
-}
-
-const fullScreen = () => {
-    return window.navigator.standalone || (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1);
-}
-
-const setTheBoard = () => {
-
-    if (phone()) {fullScreen() ? setBoardSize(9) : setBoardSize(8); setBoardHeight(0.97); setBoardWidth(0.97); return}
-
-    if (iPhoneXApp()) {setBoardSize(10); setBoardHeight(1); setBoardWidth(0.97); return}
-
-    if (phoneX()) {fullScreen() ? setBoardSize(10) : setBoardSize(8); setBoardHeight(0.97); setBoardWidth(0.97); return}
-
-    setBoardSize(9);
-
-    setBoardHeight(0.97);
-
-    if (touchScreen()) {iPad() ? setBoardWidth(0.8) : setBoardWidth(0.97); return}
-    
-    setBoardWidth(0.60);
-}
-
-const showBoard = () => {
-
-    const delays = Array.from({length: numberOfTurns() + 1}, (_, i) => i/6);
-
-        document.querySelectorAll(".turn").forEach((turn, i) => {
-            if (getComputedStyle(turn).getPropertyValue("display") != 'none') {
-                turn.style.transition = `opacity 0s linear ${delays.shift()}s`; 
-            }
-        });  
-
-        document.querySelectorAll(".turn").forEach((turn) => {
-            if (getComputedStyle(turn).getPropertyValue("display") != 'none') {
-                turn.style.opacity = 1;  
-            }  
-        });  
-}
-
-const showPegs = () => {
-
-    const delays = Array.from({length: numberOfPegs()}, (_, i) => i/6);
-
-    document.querySelectorAll(".peg").forEach((peg, i) => {
-        peg.style.transition = `opacity 0s linear ${delays.shift()}s, transform 0.3s ease-in-out`; 
-    });  
-
-    document.querySelectorAll(".peg").forEach((peg) => {
-        peg.style.opacity = 1;  
-    });     
-}
-
-const showUp = () => {
-
-        showBoard();
-
-        setTimeout(showPegs, (numberOfTurns() + 1) / numberOfPegs() * 1000);    
-}
-
-const disableTouchMove = () => {
-
-    const preventDefault = (e) => e.preventDefault();
-    document.body.addEventListener('touchstart', preventDefault, { passive: false });
-
-}
-
-const init = () => {
-
-    setServiceWorker();
-
-    disableTouchMove();
-
-    setTheBoard();
-
-    generateCode();
-
-    fillCode();
+    if (occupied.length == 4) disablePegs();
    
-    showUp();
+    peg.addEventListener('transitionend', () => {
+
+        peg.classList.remove('move'); 
+        peg.classList.add('placed');
+        peg.dataset.pos = pos;
+        hole.classList.remove('selected');
+        hole.dataset.color = color;
+
+        if (occupied.length == 4) endTurn(row);
+
+    }, {once: true});
+}
+
+const returnPeg = (peg) => {
+
+    let pos = peg.dataset.pos;
+    let rows = document.querySelectorAll('.row:not(.completed)');
+    let row = rows[rows.length - 1];
+    let hole = row.querySelectorAll('.hole-code')[pos];
+    
+    hole.classList.remove('occupied');
+    peg.classList.add('move');
+    peg.removeAttribute('style');
+    
+    delete hole.dataset.color;
+    delete peg.dataset.pos;
+
+    peg.addEventListener('transitionend', () => peg.classList.remove('move', 'placed'), {once: true});
+}
+
+const endTurn = async (row) => {
+
+    row.classList.add('completed');
+     
+    await showClues(row);
+    resetPegs();
+
+    if (gameOver()) {
+        endGame();
+        return;
+    }
 
     enablePegs();
 }
 
-window.onload = () => {
-    document.fonts.ready.then(() => {
-        init(); 
+const getClues = () => {
+
+    let clues = [0, 0];
+    let row = document.querySelector('.row.completed');
+    let solution = document.querySelectorAll('#solution .hole-code');
+
+    if (row == null) return clues;
+
+    let guess = row.querySelectorAll('.hole-code');
+
+    for (let i = 0; i < solution.length; i++) {
+        for (let j = 0; j < guess.length; j++) {
+            if (solution[i].dataset.color == guess[j].dataset.color) clues[Number(i != j)]++
+        }
+    }
+
+    return clues;
+}
+
+const showClues = async (row) => {
+
+    let [blacks, whites] = getClues();
+    let holes = [...row.querySelectorAll('.hole-clue')];
+
+    for (let i = 0; i < blacks + whites; i++) { 
+
+        let hole = holes.shift();
+
+        hole.classList.add(i < blacks ? 'black' : 'white');
+
+        await sleep(300);
+    }  
+}
+
+const resetPegs = async () => {
+
+    let pegs = document.querySelectorAll('.peg.placed');
+
+    pegs.forEach(peg => peg.classList.remove('visible'));
+
+    for (let peg of pegs) {
+
+        await sleep(150);
+
+        peg.removeAttribute('style');
+        peg.classList.remove('placed');
+        peg.classList.add('visible');
+    }
+}
+
+const gameOver = () => {
+
+    let [blacks, _] = getClues();
+    let row = document.querySelector('.row:not(.header)');
+    let holes = row.querySelectorAll('.hole-code:not(.occupied)');
+ 
+    return holes.length == 0 || blacks == 4;
+}
+
+const endGame = async () => {
+
+    flipTitle();
+    await sleep(300);
+    enableReset();
+    enablePegs();
+}
+
+const flipTitle = () => {
+
+    return new Promise(resolve => {
+
+        let flipper = document.querySelector('.flip-container');
+
+        flipper.classList.toggle('flip');
+        flipper.addEventListener('transitionend', resolve, {once: true});
     });
 }
 
+const blinkReset = () => {
+
+    let button = document.querySelector('.button');
+
+    button.classList.add('blink');
+
+    button.addEventListener('animationend', () => button.classList.remove('blink'), {once: true});
+}
+
+const resetGame = async () => {
+
+    disableReset();
+    disablePegs();
+    await Promise.all([
+        flipTitle(),
+        clearBoard()
+    ]);
+    generateCode();
+    enablePegs();
+}
+
+const clearBoard = async () => {
+   
+    let rows = document.querySelectorAll('.row.completed');
+   
+    for (let row of rows) {
+
+        await sleep(150);
+
+        let holesCode = row.querySelectorAll('.hole-code');
+        let holesClue = row.querySelectorAll('.hole-clue');
+
+        holesCode.forEach(hole => {
+            delete hole.dataset.color;
+            hole.classList.remove('occupied','selected')
+        });
+
+        holesClue.forEach(hole => hole.classList.remove('black', 'white'));
+
+        row.classList.remove('completed');
+    }
+}
+
+const enableHoles = () => {
+
+    let holes = document.querySelectorAll('.row:not(:first-child).visible .hole-code');
+
+    for (let hole of holes) {
+        hole.addEventListener('touchstart', selectHole);
+        hole.addEventListener('mousedown', selectHole);
+    }
+}
+
+const enablePegs = () => {
+
+    let pegs = document.querySelectorAll('.peg');
+
+    for (let peg of pegs) {
+        peg.classList.add('enabled');
+        peg.addEventListener('touchstart', selectPeg);
+        peg.addEventListener('mousedown', selectPeg);
+    }
+}
+
+const disablePegs = () => {
+
+    let pegs = document.querySelectorAll('.peg');
+
+    for (let peg of pegs) {
+        peg.classList.remove('enabled');
+        peg.removeEventListener('touchstart', selectPeg);
+        peg.removeEventListener('mousedown', selectPeg);
+    }
+}
+
+const enableReset = () => {
+
+    let reset = document.querySelector('.reset');
+    let button = document.querySelector('.button');
+
+    button.style.transitionDuration = '0.6s';
+    button.addEventListener('transitionend', () => button.removeAttribute('style'), {once: true});
+
+    reset.classList.add('enabled');
+    reset.addEventListener('touchstart', resetGame);
+    reset.addEventListener('mousedown', resetGame);
+}
+
+const disableReset = () => {
+
+    let reset = document.querySelector('.reset');
+
+    reset.classList.remove('enabled');
+    reset.removeEventListener('touchstart', resetGame);
+    reset.removeEventListener('mousedown', resetGame);
+}
+
+const disableScreen = () => {
+
+    const preventDefault = (e) => e.preventDefault();
+
+    document.addEventListener('touchstart', preventDefault, {passive: false});
+    document.addEventListener('mousedown', preventDefault, {passive: false});
+}
+
+const registerServiceWorker = () => {
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+}
+
+const init = async () => {
+
+    registerServiceWorker();
+    disableScreen();
+    await portraitMode();
+    setBoardSize();
+    generateCode();
+    await showBoard();
+    enablePegs();
+    enableHoles();
+}
+
+window.onload = () => document.fonts.ready.then(init); 

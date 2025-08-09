@@ -3,43 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Mastermind</title>
-    <meta name="description" content="Mastermind Game">
-    <meta name="keywords" content="master, mind, puzzle, game, color, code, break, solve, online, brain, board, play, logic, deduction, white, black, kids">
+    <meta name="description" content="Following the hints, solve the secret code consisting of four different colors">
+    <meta name="keywords" content="board,puzzle,game,play,online,color,code,break,solve,brain,mind,logic,school,kids,family">
     <meta name="author" content="Alexander Berson">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
     <meta name="apple-itunes-app" content="app-id=1553588319">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="google" content="notranslate"> 
+    <meta name="google" content="notranslate">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Mastermind">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="images/icons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="images/icons/favicon.svg">
     <link rel="shortcut icon" href="images/icons/favicon.ico">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ff0000">  
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
 
     <link href="css/style.css" rel="stylesheet">
     <script src="js/mastermind.js" defer></script>
 </head>
-
 <body class="noselect">
     <main>
+        <div class="rotate"><img src="images/rotate.svg" alt=""></div>
         <div class="board">
-            <div class="turn">
+            <div class="row header">
                 <div class="code-outer">
                     <div  class="code-inner">
                         <div class="flip-container">
                             <div class="flipper">
                                 <div class="front">
                                     <div id="label">
-                                        <p id="title">Mastermind</p>
-                                        <p id="subtitle">Designed by Alexander Berson</p>
+                                        <div id="title">Mastermind</div>
+                                        <div id="subtitle">Designed by Alexander Berson</div>
                                     </div>
                                 </div>
                                 <div class="back">
@@ -54,167 +50,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <img src="images/refresh.svg" alt="">
+                <div class="clue-outer">
+                    <div class="clue-inner reset">
+                        <img class="button" src="images/arrow.svg" alt="">
                     </div>
                 </div>
             </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
+            <template class="row-template">
+                <div class="row">
+                    <div class="code-outer">
+                        <div class="code-inner">
+                            <div class="hole-code"></div>
+                            <div class="hole-code"></div>
+                            <div class="hole-code"></div>
+                            <div class="hole-code"></div>
+                        </div>
+                    </div>
+                    <div class="clue-outer">
+                        <div class="clue-inner">
+                            <div class="hole-clue"></div>
+                            <div class="hole-clue"></div>
+                            <div class="hole-clue"></div>
+                            <div class="hole-clue"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="turn">
-                <div class="code-outer">
-                    <div  class="code-inner">
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                        <div class="hole-code"></div>
-                    </div>
-                </div>
-                <div class="bc-outer">
-                    <div  class="bc-inner">
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                        <div class="hole-bc"></div>
-                    </div>
-                </div>
-            </div>
+            </template> 
             <div class="pegs">
-                <div class="peg color-a" id="a"></div>
-                <div class="peg color-b" id="b"></div>
-                <div class="peg color-c" id="c"></div>
-                <div class="peg color-d" id="d"></div>
-                <div class="peg color-e" id="e"></div>
-                <div class="peg color-f" id="f"></div>   
+                <div class="peg" data-color="1"></div>
+                <div class="peg" data-color="2"></div>
+                <div class="peg" data-color="3"></div>
+                <div class="peg" data-color="4"></div>
+                <div class="peg" data-color="5"></div>
+                <div class="peg" data-color="6"></div>
             </div>
-        </div>   
+        </div>
     </main>
-    <footer>
-    </footer>
 </body>
 </html>
