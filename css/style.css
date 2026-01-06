@@ -25,6 +25,7 @@
     --notch-inner-size: 9px;
     --hole-code-size: 1.5;
     --hole-clue-size: 3.9;
+    --hole-board-ratio: 0.13;
     --outer: polygon(
                 0% var(--notch-outer-size), 
                 var(--notch-outer-size) 0%, 
@@ -176,16 +177,16 @@ body {
 }
 
 #title {
-    font-size: 12.2vmin;
+    font-size: calc(8.25vmin * (2 + var(--hole-board-ratio) / 0.13) / 3);
     font-weight: bold;
     margin: 0;
-    margin-top: -2vmin;
+    margin-top: 1vmin;
+
 }
 
 #subtitle {
     font-size: 3vmin;
-    margin-top: -0.7em;
-    margin-bottom: -0.3em;
+    margin-top: -0.5em;
     color: gray;
 }
 
@@ -386,7 +387,7 @@ body {
     }
 
     #title {
-        font-size: calc(var(--board-width) / 4 * 3 / 6.2);
+        font-size: calc(var(--board-width) / 4 * 3 / 8.9);
     }
     
     #subtitle {
@@ -410,8 +411,8 @@ body {
     }
 
     #title {
-        font-size: calc(var(--board-width) / 4 * 3 / 6);
-
+        font-size: calc(var(--board-width) / 4 * 3 / 8.9);
+        margin-top: 0.5vmin;
     }
     
     #subtitle {

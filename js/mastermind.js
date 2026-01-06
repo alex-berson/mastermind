@@ -36,13 +36,19 @@ const setBoardSize = () => {
     const fullScreen = () => window.navigator.standalone || nativeApp();
     const nativeApp = () => !document.URL.startsWith('http://') && !document.URL.startsWith('https://');
 
+    let board = document.querySelector('.board');
+    let hole = document.querySelector('.hole-code');
     let n = fullScreen() ? screen.width / screen.height < 0.5 ? 10 : 9 : 8;
     let scaleX = touchScreen() ? screen.width > 460 && screen.height > 460 ? 0.75 : 0.97 : 0.6 * window.innerHeight / window.innerWidth;
     let scaleY = nativeApp() && screen.width / screen.height < 0.5 ? 1 : 0.97;
-
+    
     document.documentElement.style.setProperty('--board-size', n);
     document.documentElement.style.setProperty('--board-width', `${Math.ceil(document.documentElement.clientWidth * scaleX / 4) * 4}px`);
     document.documentElement.style.setProperty('--board-height', `${Math.ceil(document.documentElement.clientHeight * scaleY / n) * n}px`);
+
+    let ratio = hole.getBoundingClientRect().width / board.getBoundingClientRect().width;
+
+    document.documentElement.style.setProperty('--hole-board-ratio', ratio);
 }
 
 const generateCode = () => {

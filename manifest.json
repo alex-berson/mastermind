@@ -1,6 +1,6 @@
 {
-   "name": "Mastermind",
-   "short_name": "Mastermind",
+   "name": "Codebreaker",
+   "short_name": "Codebreaker",
    "start_url": "index.html",
    "display": "standalone",
    "orientation": "portrait",
